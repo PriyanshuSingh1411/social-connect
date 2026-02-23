@@ -42,10 +42,18 @@ export default function HomePage() {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get(`/api/posts?userId=${session.user.id}`);
+      // First try to get all posts (global feed)
+      const res = await axios.get("/api/posts");
       setPosts(res.data.posts);
     } catch (error) {
       console.error("Error fetching posts:", error);
+      // Fallback: try with userId to get followed users' posts
+      try {
+        const res = await axios.get(`/api/posts?userId=${session.user.id}`);
+        setPosts(res.data.posts);
+      } catch (fallbackError) {
+        console.error("Error fetching posts (fallback):", fallbackError);
+      }
     } finally {
       setLoading(false);
     }
