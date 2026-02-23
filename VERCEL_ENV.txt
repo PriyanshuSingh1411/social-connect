@@ -1,0 +1,13 @@
+# Environment Variables for Vercel
+
+After deploying to Vercel, add these environment variables in Vercel Dashboard → Settings → Environment Variables:
+
+1. MONGODB_URI = mongodb+srv://<username>:<password>@cluster.mongodb.net/socialconnect
+   (Get this from MongoDB Atlas after creating free cluster)
+
+2. NEXTAUTH_URL = https://social-connect.vercel.app
+   (Replace with your actual Vercel URL after deployment)
+
+3. NEXTAUTH_SECRET = fb4613113e83f79ad312d180e158501fa4bf6e66d9f88e1b6512024f10c56384
+
+4. JWT_SECRET = 690dfcdf4450d2a28c1f08672955b4e54124cf6c8dc0897df7ca7fc3d4d723a3
