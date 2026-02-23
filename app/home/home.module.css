@@ -1,0 +1,620 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sidebar */
+.sidebar {
+  width: 275px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 1rem;
+  border-right: 1px solid var(--border);
+  background: var(--background);
+}
+
+.sidebarContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  padding: 0.5rem;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.navItem,
+.navItemActive {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 9999px;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--foreground);
+  transition: background 0.2s;
+}
+
+.navItem:hover,
+.navItemActive {
+  background: var(--gray-100);
+}
+
+.navItemActive {
+  color: var(--primary);
+}
+
+.postButton {
+  padding: 0.875rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.postButton:hover {
+  background: var(--primary-hover);
+}
+
+.userInfo {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.userInfo:hover {
+  background: var(--gray-100);
+}
+
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.userHandle {
+  color: var(--gray-500);
+  font-size: 0.875rem;
+}
+
+/* Main Content */
+.main {
+  flex: 1;
+  border-right: 1px solid var(--border);
+  min-height: 100vh;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  padding: 1rem;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  z-index: 10;
+}
+
+.header h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* Create Post */
+.createPost {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
+}
+
+.createPostInput {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.createPostAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.postForm {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.postInput {
+  border: none;
+  background: transparent;
+  font-size: 1.125rem;
+  color: var(--foreground);
+  outline: none;
+  width: 100%;
+}
+
+.postInput::placeholder {
+  color: var(--gray-400);
+}
+
+.postSubmit {
+  align-self: flex-end;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.postSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Image Upload */
+.postActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.imageUploadLabel {
+  cursor: pointer;
+  color: var(--primary);
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.imageUploadLabel:hover {
+  background: var(--gray-100);
+}
+
+.imageInput {
+  display: none;
+}
+
+.imagePreview {
+  position: relative;
+  margin-top: 0.75rem;
+  margin-left: 3.25rem;
+  display: inline-block;
+}
+
+.imagePreview img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+}
+
+.removeImage {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--red);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Feed */
+.feed {
+  background: var(--background);
+}
+
+.emptyFeed {
+  padding: 3rem;
+  text-align: center;
+  color: var(--gray-500);
+}
+
+/* Post Card */
+.post {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.post:hover {
+  background: var(--gray-50);
+}
+
+.postHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.postAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.postUserInfo {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.postUserName {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.postUserName:hover {
+  text-decoration: underline;
+}
+
+.postUserHandle,
+.postTime {
+  color: var(--gray-500);
+  font-size: 0.9375rem;
+}
+
+.deleteBtn {
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.deleteBtn:hover {
+  background: #fee2e2;
+  color: var(--red);
+}
+
+.postContent {
+  margin-left: 3.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.postContent p {
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.postImage {
+  margin-top: 0.75rem;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+}
+
+.postActions {
+  display: flex;
+  gap: 1.5rem;
+  margin-left: 3.25rem;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  color: var(--gray-500);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.actionBtn:hover {
+  background: #fee2e2;
+  color: var(--red);
+}
+
+.actionBtn.liked {
+  color: var(--red);
+}
+
+/* Comments */
+.commentsSection {
+  margin-top: 1rem;
+  margin-left: 3.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.comment {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.commentAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gray-200);
+  color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.commentContent {
+  flex: 1;
+  background: var(--gray-100);
+  padding: 0.75rem;
+  border-radius: 1rem;
+}
+
+.commentUserName {
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-right: 0.5rem;
+}
+
+.commentContent p {
+  font-size: 0.9375rem;
+  margin-top: 0.25rem;
+}
+
+.commentForm {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.commentInput {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.875rem;
+}
+
+.commentInput:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.commentSubmit {
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+/* Right Sidebar */
+.rightSidebar {
+  width: 350px;
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.searchContainer {
+  position: relative;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--gray-100);
+  border-radius: 9999px;
+  margin-bottom: 1rem;
+}
+
+.searchBox svg {
+  color: var(--gray-500);
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  flex: 1;
+  font-size: 0.9375rem;
+  color: var(--foreground);
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--gray-500);
+}
+
+.searchResults {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-lg);
+  z-index: 20;
+  overflow: hidden;
+}
+
+.searchResultItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  transition: background 0.2s;
+}
+
+.searchResultItem:hover {
+  background: var(--gray-100);
+}
+
+.searchResultAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.searchResultName {
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.searchResultHandle {
+  color: var(--gray-500);
+  font-size: 0.875rem;
+}
+
+.trending {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.trending h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.trendingHint {
+  color: var(--gray-500);
+  font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .rightSidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 80px;
+  }
+
+  .logo span,
+  .navItem span,
+  .postButton,
+  .userDetails {
+    display: none;
+  }
+
+  .userInfo {
+    justify-content: center;
+    padding: 0.5rem;
+  }
+
+  .navItem,
+  .navItemActive {
+    justify-content: center;
+    padding: 0.75rem;
+  }
+}

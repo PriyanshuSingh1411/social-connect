@@ -1,0 +1,27 @@
+{
+  "name": "social-connect",
+  "version": "1.0.0",
+  "description": "A fullstack social media platform for TY college project",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "mongoose": "8.5.1",
+    "next-auth": "4.24.7",
+    "bcryptjs": "2.4.3",
+    "axios": "1.7.2",
+    "react-icons": "5.2.1",
+    "cookie": "0.6.0"
+  },
+  "devDependencies": {
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.5"
+  }
+}
