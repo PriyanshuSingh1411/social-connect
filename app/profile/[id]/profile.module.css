@@ -370,7 +370,7 @@
 
 @media (max-width: 768px) {
   .coverPhoto {
-    height: 150px;
+    height: 120px;
   }
 
   .avatar {
@@ -381,5 +381,199 @@
 
   .profileInfo {
     margin-top: -40px;
+    padding: 0 0.75rem;
+  }
+
+  .profileHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .profileActions {
+    width: 100%;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .followButton,
+  .editButton {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.9375rem;
+  }
+
+  .userDetails {
+    margin-bottom: 0.75rem;
+  }
+
+  .userDetails h2 {
+    font-size: 1.25rem;
+  }
+
+  .username {
+    margin-bottom: 0.5rem;
+  }
+
+  .bio {
+    margin-bottom: 0.75rem;
+    font-size: 0.9375rem;
+  }
+
+  .meta {
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .stats {
+    gap: 1rem;
+  }
+
+  .stat {
+    gap: 0.25rem;
+  }
+
+  .statValue {
+    font-size: 1rem;
+  }
+
+  .statLabel {
+    font-size: 0.8125rem;
+  }
+
+  .tabs {
+    margin-top: 0.75rem;
+  }
+
+  .tab {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .header {
+    padding: 0.75rem;
+  }
+
+  .backButton {
+    width: 32px;
+    height: 32px;
+  }
+
+  .header h1 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .coverPhoto {
+    height: 100px;
+  }
+
+  .avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 1.5rem;
+    border-width: 3px;
+  }
+
+  .profileInfo {
+    margin-top: -32px;
+  }
+
+  .userDetails h2 {
+    font-size: 1.125rem;
+  }
+
+  .username {
+    font-size: 0.875rem;
+  }
+
+  .bio {
+    font-size: 0.875rem;
+  }
+
+  .meta {
+    font-size: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .stats {
+    gap: 0.75rem;
+  }
+
+  .statValue {
+    font-size: 0.9375rem;
+  }
+
+  .statLabel {
+    font-size: 0.75rem;
+  }
+
+  .tab {
+    padding: 0.625rem 0.375rem;
+    font-size: 0.8125rem;
+  }
+
+  .post {
+    padding: 0.75rem;
+  }
+
+  .postHeader {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .postAvatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+
+  .postUserInfo {
+    gap: 0.25rem;
+  }
+
+  .postUserName {
+    font-size: 0.875rem;
+  }
+
+  .postTime {
+    font-size: 0.8125rem;
+  }
+
+  .postContent {
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .postContent p {
+    font-size: 0.9375rem;
+  }
+
+  .postImage {
+    max-width: 100%;
+    border-radius: 0.75rem;
+  }
+
+  .postActions {
+    margin-left: 0;
+    gap: 0.75rem;
+  }
+
+  .actionBtn {
+    padding: 0.375rem;
+  }
+
+  .actionBtn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .emptyState {
+    padding: 2rem;
+    font-size: 0.9375rem;
   }
 }

@@ -283,15 +283,154 @@
 }
 
 @media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    height: 100vh;
+  }
+
   .sidebar {
     width: 100%;
+    height: 100%;
+    border-right: none;
+  }
+
+  .header {
+    padding: 1rem;
+  }
+
+  .header h2 {
+    font-size: 1.25rem;
+  }
+
+  .searchBox {
+    padding: 0.75rem;
+  }
+
+  .searchInput {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .searchResult {
+    padding: 0.625rem;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    margin-right: 0.5rem;
+  }
+
+  .userName {
+    font-size: 0.875rem;
+  }
+
+  .userUsername {
+    font-size: 0.75rem;
+  }
+
+  .conversation {
+    padding: 0.75rem;
   }
 
   .chatArea {
     display: none;
+    height: 100%;
   }
 
   .chatArea.active {
     display: flex;
+  }
+
+  .chatHeader {
+    padding: 0.75rem;
+  }
+
+  .backButton {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+  }
+
+  .messages {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .message {
+    max-width: 80%;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  .message.sent {
+    border-bottom-right-radius: 3px;
+  }
+
+  .message.received {
+    border-bottom-left-radius: 3px;
+  }
+
+  .messageImage {
+    max-width: 150px;
+  }
+
+  .messageTime {
+    font-size: 0.625rem;
+  }
+
+  .inputArea {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .imageButton {
+    font-size: 1.25rem;
+  }
+
+  .messageInput {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+  }
+
+  .sendButton {
+    width: 36px;
+    height: 36px;
+  }
+
+  .noChat {
+    font-size: 0.9375rem;
+  }
+
+  .loading {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h2 {
+    font-size: 1.125rem;
+  }
+
+  .message {
+    max-width: 85%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .messageImage {
+    max-width: 120px;
+  }
+
+  .inputArea {
+    padding: 0.5rem;
+  }
+
+  .messageInput {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .sendButton {
+    width: 32px;
+    height: 32px;
   }
 }

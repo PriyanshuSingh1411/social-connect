@@ -174,15 +174,74 @@
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+  }
+
+  .logo {
+    font-size: 1.25rem;
+  }
+
   .title {
-    font-size: 2.5rem;
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .hero {
+    padding: 2rem 1rem;
+  }
+
+  .heroContent {
+    margin-bottom: 2rem;
   }
 
   .features {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .featureCard {
+    padding: 1.5rem;
   }
 
   .cta {
     flex-direction: column;
+  }
+
+  .ctaPrimary,
+  .ctaSecondary {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .footer {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .subtitle {
+    font-size: 0.9375rem;
+  }
+
+  .featureCard h3 {
+    font-size: 1.125rem;
+  }
+
+  .featureCard p {
+    font-size: 0.8125rem;
+  }
+
+  .featureIcon {
+    width: 50px;
+    height: 50px;
   }
 }
