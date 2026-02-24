@@ -9,6 +9,9 @@ export async function GET(req, { params }) {
   try {
     await connectDB();
 
+    const { searchParams } = new URL(req.url);
+    const currentUserId = searchParams.get("currentUserId");
+
     const user = await User.findById(params.id).select("-password");
 
     if (!user) {
@@ -19,7 +22,16 @@ export async function GET(req, { params }) {
       .populate("userId", "name username profilePicture")
       .sort({ createdAt: -1 });
 
-    return NextResponse.json({ user, posts });
+    // Check if current user is following this user
+    let isFollowing = false;
+    if (currentUserId) {
+      const currentUser = await User.findById(currentUserId);
+      if (currentUser) {
+        isFollowing = currentUser.following.includes(params.id);
+      }
+    }
+
+    return NextResponse.json({ user, posts, isFollowing });
   } catch (error) {
     console.error("Get user error:", error);
     return NextResponse.json(

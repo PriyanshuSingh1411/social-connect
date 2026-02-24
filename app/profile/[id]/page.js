@@ -40,7 +40,9 @@ export default function ProfilePage() {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get(`/api/users/${params.id}`);
+      const res = await axios.get(
+        `/api/users/${params.id}?currentUserId=${session?.user?.id}`,
+      );
       setUser(res.data.user);
       setIsFollowing(res.data.isFollowing);
     } catch (error) {
