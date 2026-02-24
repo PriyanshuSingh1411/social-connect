@@ -74,6 +74,20 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isOnline: {
+      type: Boolean,
+      default: false,
+    },
+    lastSeen: {
+      type: Date,
+      default: null,
+    },
+    typingUsers: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        expiresAt: { type: Date },
+      },
+    ],
     bookmarkedPosts: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -88,6 +102,12 @@ const userSchema = new mongoose.Schema(
 
 // Index for search functionality
 userSchema.index({ username: "text", name: "text" });
+
+// Auto-expire typing users
+userSchema.methods.cleanupTypingUsers = function () {
+  const now = new Date();
+  this.typingUsers = this.typingUsers.filter((u) => u.expiresAt > now);
+};
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 

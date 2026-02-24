@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { FaPaperPlane, FaImage, FaArrowLeft } from "react-icons/fa";
+import { FaPaperPlane, FaImage, FaArrowLeft, FaCircle } from "react-icons/fa";
 import styles from "./chat.module.css";
 
 export default function ChatPage() {
@@ -17,8 +17,84 @@ export default function ChatPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState({});
+  const [typingUsers, setTypingUsers] = useState({});
+  const [partnerTyping, setPartnerTyping] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+  const isTypingRef = useRef(false);
+
+  // Set user online on mount, offline on unmount
+  useEffect(() => {
+    if (session) {
+      // Set online
+      axios.post("/api/users/online", { isOnline: true });
+
+      // Set offline on unmount
+      return () => {
+        axios.post("/api/users/online", { isOnline: false });
+      };
+    }
+  }, [session]);
+
+  // Poll for online status and typing indicators
+  useEffect(() => {
+    if (!session) return;
+
+    const fetchOnlineStatus = async () => {
+      try {
+        const res = await axios.get("/api/users/online", {
+          params: {
+            userIds: conversations.map((c) => c.partner._id).join(","),
+          },
+        });
+        setOnlineUsers(res.data);
+      } catch (error) {
+        console.error("Error fetching online status:", error);
+      }
+    };
+
+    const fetchTypingStatus = async () => {
+      try {
+        const res = await axios.get("/api/users/typing");
+        const typingMap = {};
+        res.data.typingUsers.forEach((u) => {
+          if (u.userId) {
+            typingMap[u.userId._id] = u.userId;
+          }
+        });
+        setTypingUsers(typingMap);
+      } catch (error) {
+        console.error("Error fetching typing status:", error);
+      }
+    };
+
+    // Initial fetch
+    if (conversations.length > 0) {
+      fetchOnlineStatus();
+      fetchTypingStatus();
+    }
+
+    // Poll every 3 seconds
+    const interval = setInterval(() => {
+      if (conversations.length > 0) {
+        fetchOnlineStatus();
+      }
+      fetchTypingStatus();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [session, conversations]);
+
+  // Check if partner is typing in current chat
+  useEffect(() => {
+    if (selectedChat) {
+      const isPartnerTyping =
+        typingUsers[selectedChat.partner._id] !== undefined;
+      setPartnerTyping(isPartnerTyping);
+    }
+  }, [typingUsers, selectedChat]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -65,7 +141,6 @@ export default function ChatPage() {
     if (query.length > 2) {
       try {
         const res = await axios.get(`/api/users?search=${query}`);
-        // API returns { users: [...] }, so we need to access res.data.users
         const users = res.data.users || res.data;
         setSearchResults(users.filter((u) => u._id !== session?.user?.id));
       } catch (error) {
@@ -76,8 +151,46 @@ export default function ChatPage() {
     }
   };
 
+  const sendTypingStatus = async (isTyping) => {
+    if (!selectedChat || isTypingRef.current === isTyping) return;
+
+    isTypingRef.current = isTyping;
+    try {
+      await axios.post("/api/users/typing", {
+        receiverId: selectedChat.partner._id,
+        isTyping,
+      });
+    } catch (error) {
+      console.error("Error sending typing status:", error);
+    }
+  };
+
+  const handleMessageChange = (e) => {
+    setNewMessage(e.target.value);
+
+    // Send typing indicator
+    if (e.target.value && !isTypingRef.current) {
+      sendTypingStatus(true);
+    }
+
+    // Clear typing after 2 seconds of no input
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      sendTypingStatus(false);
+      isTypingRef.current = false;
+    }, 2000);
+  };
+
   const sendMessage = async () => {
     if (!newMessage.trim() && !selectedImage) return;
+
+    // Stop typing indicator
+    sendTypingStatus(false);
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
 
     try {
       const res = await axios.post("/api/messages", {
@@ -128,6 +241,22 @@ export default function ChatPage() {
     setSearchQuery("");
   };
 
+  const formatLastSeen = (lastSeen) => {
+    if (!lastSeen) return "Online";
+    const date = new Date(lastSeen);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString();
+  };
+
   if (status === "loading") {
     return <div className={styles.loading}>Loading...</div>;
   }
@@ -155,11 +284,16 @@ export default function ChatPage() {
                   className={styles.searchResult}
                   onClick={() => startChat(user)}
                 >
-                  <img
-                    src={user.profilePicture || "/default-avatar.png"}
-                    alt={user.name}
-                    className={styles.avatar}
-                  />
+                  <div className={styles.avatarContainer}>
+                    <img
+                      src={user.profilePicture || "/default-avatar.png"}
+                      alt={user.name}
+                      className={styles.avatar}
+                    />
+                    {onlineUsers[user._id]?.isOnline && (
+                      <span className={styles.onlineIndicator}></span>
+                    )}
+                  </div>
                   <div>
                     <div className={styles.userName}>{user.name}</div>
                     <div className={styles.userUsername}>@{user.username}</div>
@@ -177,16 +311,25 @@ export default function ChatPage() {
               className={`${styles.conversation} ${selectedChat?.partner?._id === conv.partner._id ? styles.active : ""}`}
               onClick={() => setSelectedChat(conv)}
             >
-              <img
-                src={conv.partner.profilePicture || "/default-avatar.png"}
-                alt={conv.partner.name}
-                className={styles.avatar}
-              />
+              <div className={styles.avatarContainer}>
+                <img
+                  src={conv.partner.profilePicture || "/default-avatar.png"}
+                  alt={conv.partner.name}
+                  className={styles.avatar}
+                />
+                {onlineUsers[conv.partner._id]?.isOnline && (
+                  <span className={styles.onlineIndicator}></span>
+                )}
+              </div>
               <div className={styles.conversationInfo}>
                 <div className={styles.userName}>{conv.partner.name}</div>
-                <div className={styles.lastMessage}>
-                  {conv.lastMessage?.content?.substring(0, 30)}...
-                </div>
+                {typingUsers[conv.partner._id] ? (
+                  <div className={styles.typingIndicator}>typing...</div>
+                ) : (
+                  <div className={styles.lastMessage}>
+                    {conv.lastMessage?.content?.substring(0, 30)}...
+                  </div>
+                )}
               </div>
               {conv.unreadCount > 0 && (
                 <div className={styles.unreadBadge}>{conv.unreadCount}</div>
@@ -206,19 +349,28 @@ export default function ChatPage() {
               >
                 <FaArrowLeft />
               </button>
-              <img
-                src={
-                  selectedChat.partner.profilePicture || "/default-avatar.png"
-                }
-                alt={selectedChat.partner.name}
-                className={styles.avatar}
-              />
+              <div className={styles.avatarContainer}>
+                <img
+                  src={
+                    selectedChat.partner.profilePicture || "/default-avatar.png"
+                  }
+                  alt={selectedChat.partner.name}
+                  className={styles.avatar}
+                />
+                {onlineUsers[selectedChat.partner._id]?.isOnline && (
+                  <span className={styles.onlineIndicator}></span>
+                )}
+              </div>
               <div>
                 <div className={styles.userName}>
                   {selectedChat.partner.name}
                 </div>
-                <div className={styles.userUsername}>
-                  @{selectedChat.partner.username}
+                <div className={styles.userStatus}>
+                  {onlineUsers[selectedChat.partner._id]?.isOnline
+                    ? "Online"
+                    : formatLastSeen(
+                        onlineUsers[selectedChat.partner._id]?.lastSeen,
+                      )}
                 </div>
               </div>
             </div>
@@ -245,6 +397,15 @@ export default function ChatPage() {
                   </div>
                 </div>
               ))}
+              {partnerTyping && (
+                <div className={`${styles.message} ${styles.received}`}>
+                  <div className={styles.typingDots}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              )}
               <div ref={messagesEndRef} />
             </div>
 
@@ -272,7 +433,7 @@ export default function ChatPage() {
                 type="text"
                 placeholder="Type a message..."
                 value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
+                onChange={handleMessageChange}
                 onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                 className={styles.messageInput}
               />
