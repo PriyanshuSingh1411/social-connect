@@ -683,6 +683,7 @@
   display: flex;
   gap: var(--space-2);
   margin-top: var(--space-2);
+  align-items: center;
 }
 
 .commentInput {
@@ -694,6 +695,7 @@
   color: var(--foreground);
   font-size: 0.8125rem;
   transition: var(--transition);
+  min-height: 36px;
 }
 
 .commentInput:focus {
@@ -703,7 +705,7 @@
 }
 
 .commentSubmit {
-  padding: var(--space-1) var(--space-3);
+  padding: var(--space-2) var(--space-3);
   background: var(--primary);
   color: white;
   border: none;
@@ -712,10 +714,37 @@
   font-size: 0.75rem;
   cursor: pointer;
   transition: var(--transition);
+  white-space: nowrap;
 }
 
 .commentSubmit:hover {
   background: var(--primary-hover);
+}
+
+/* Mobile comment visibility */
+@media screen and (max-width: 768px) {
+  .commentInput {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .commentSubmit {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .commentsSection {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .comment {
+    margin-bottom: var(--space-2);
+  }
+
+  .commentContent {
+    padding: 8px 12px;
+  }
 }
 
 /* Bottom Navigation - Mobile */

@@ -8,7 +8,8 @@ export async function GET(req) {
     await connectDB();
 
     const { searchParams } = new URL(req.url);
-    const query = searchParams.get("q");
+    // Support both 'q' and 'search' query parameters
+    const query = searchParams.get("q") || searchParams.get("search");
 
     if (!query) {
       return NextResponse.json({ users: [] });
