@@ -16,6 +16,7 @@ export default function ChatPage() {
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -64,7 +65,9 @@ export default function ChatPage() {
     if (query.length > 2) {
       try {
         const res = await axios.get(`/api/users?search=${query}`);
-        setSearchResults(res.data.filter((u) => u._id !== session?.user?.id));
+        // API returns { users: [...] }, so we need to access res.data.users
+        const users = res.data.users || res.data;
+        setSearchResults(users.filter((u) => u._id !== session?.user?.id));
       } catch (error) {
         console.error("Error searching users:", error);
       }
@@ -90,8 +93,6 @@ export default function ChatPage() {
       console.error("Error sending message:", error);
     }
   };
-
-  const [selectedImage, setSelectedImage] = useState(null);
 
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
