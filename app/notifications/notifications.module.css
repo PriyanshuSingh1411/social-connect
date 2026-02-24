@@ -186,6 +186,69 @@
   display: block;
 }
 
+.requestActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.acceptButton {
+  padding: 0.375rem 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.acceptButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.acceptButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rejectButton {
+  padding: 0.375rem 1rem;
+  background: var(--gray-100);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.rejectButton:hover:not(:disabled) {
+  background: var(--gray-200);
+}
+
+.rejectButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.requestStatus {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.requestStatus.accepted {
+  color: #10b981;
+}
+
+.requestStatus.rejected {
+  color: var(--gray-500);
+}
+
 @media (max-width: 768px) {
   .container {
     border-left: none;

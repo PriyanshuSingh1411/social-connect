@@ -15,6 +15,8 @@ export default function ProfilePage() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  const [isFollowBack, setIsFollowBack] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
 
   // Modal states
@@ -45,6 +47,8 @@ export default function ProfilePage() {
       );
       setUser(res.data.user);
       setIsFollowing(res.data.isFollowing);
+      setIsPending(res.data.isPending || false);
+      setIsFollowBack(res.data.isFollowBack || false);
     } catch (error) {
       console.error("Error fetching user:", error);
     } finally {
@@ -110,6 +114,9 @@ export default function ProfilePage() {
         type: "follow",
       });
       setIsFollowing(res.data.isFollowing);
+      if (res.data.isPending) {
+        setIsPending(true);
+      }
       setUser({ ...user, followers: res.data.user.followers });
     } catch (error) {
       console.error("Error following user:", error);
@@ -158,6 +165,16 @@ export default function ProfilePage() {
 
   const isOwnProfile = session?.user?.id === params.id;
 
+  // Determine button text based on follow status
+  let followButtonText = "Follow";
+  if (isFollowing) {
+    followButtonText = "Following";
+  } else if (isPending) {
+    followButtonText = "Pending";
+  } else if (isFollowBack && !isFollowing) {
+    followButtonText = "Follow Back";
+  }
+
   return (
     <div className={styles.container}>
       {/* Header */}
@@ -202,9 +219,10 @@ export default function ProfilePage() {
             {!isOwnProfile && (
               <button
                 onClick={handleFollow}
-                className={`${styles.followButton} ${isFollowing ? styles.following : ""}`}
+                className={`${styles.followButton} ${isFollowing || isPending ? styles.following : ""}`}
+                disabled={isPending}
               >
-                {isFollowing ? "Following" : "Follow"}
+                {followButtonText}
               </button>
             )}
             {isOwnProfile && (

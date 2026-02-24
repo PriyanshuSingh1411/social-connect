@@ -13,6 +13,7 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [processingId, setProcessingId] = useState(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -40,6 +41,60 @@ export default function NotificationsPage() {
       console.error("Error fetching notifications:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAcceptRequest = async (notificationId, senderId) => {
+    setProcessingId(notificationId);
+    try {
+      await axios.put(`/api/users/${senderId}`, {
+        currentUserId: session.user.id,
+        type: "acceptRequest",
+      });
+
+      // Update the notification in the local state
+      setNotifications(
+        notifications.map((n) =>
+          n._id === notificationId
+            ? {
+                ...n,
+                status: "accepted",
+                message: "accepted your follow request",
+              }
+            : n,
+        ),
+      );
+    } catch (error) {
+      console.error("Error accepting request:", error);
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleRejectRequest = async (notificationId, senderId) => {
+    setProcessingId(notificationId);
+    try {
+      await axios.put(`/api/users/${senderId}`, {
+        currentUserId: session.user.id,
+        type: "rejectRequest",
+      });
+
+      // Update the notification in the local state
+      setNotifications(
+        notifications.map((n) =>
+          n._id === notificationId
+            ? {
+                ...n,
+                status: "rejected",
+                message: "rejected your follow request",
+              }
+            : n,
+        ),
+      );
+    } catch (error) {
+      console.error("Error rejecting request:", error);
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -74,6 +129,7 @@ export default function NotificationsPage() {
           </div>
         );
       case "follow":
+      case "followRequest":
         return (
           <div className={`${styles.icon} ${styles.followIcon}`}>
             <svg
@@ -174,32 +230,75 @@ export default function NotificationsPage() {
           </div>
         ) : (
           notifications.map((notification) => (
-            <Link
+            <div
               key={notification._id}
-              href={
-                notification.post
-                  ? `/post/${notification.post._id}`
-                  : `/profile/${notification.sender._id}`
-              }
               className={`${styles.notification} ${!notification.read ? styles.unread : ""}`}
             >
               {getNotificationIcon(notification.type)}
 
               <div className={styles.notificationContent}>
-                <div className={styles.notificationAvatar}>
+                <Link
+                  href={`/profile/${notification.sender._id}`}
+                  className={styles.notificationAvatar}
+                >
                   {notification.sender?.name?.charAt(0).toUpperCase()}
-                </div>
+                </Link>
                 <div className={styles.notificationText}>
                   <p>
-                    <strong>{notification.sender?.name}</strong>{" "}
+                    <Link href={`/profile/${notification.sender._id}`}>
+                      <strong>{notification.sender?.name}</strong>
+                    </Link>{" "}
                     {notification.message}
                   </p>
                   <span className={styles.time}>
                     {new Date(notification.createdAt).toLocaleDateString()}
                   </span>
+
+                  {/* Show accept/reject buttons for follow requests */}
+                  {notification.type === "followRequest" &&
+                    notification.status === "pending" && (
+                      <div className={styles.requestActions}>
+                        <button
+                          className={styles.acceptButton}
+                          onClick={() =>
+                            handleAcceptRequest(
+                              notification._id,
+                              notification.sender._id,
+                            )
+                          }
+                          disabled={processingId === notification._id}
+                        >
+                          Accept
+                        </button>
+                        <button
+                          className={styles.rejectButton}
+                          onClick={() =>
+                            handleRejectRequest(
+                              notification._id,
+                              notification.sender._id,
+                            )
+                          }
+                          disabled={processingId === notification._id}
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    )}
+
+                  {/* Show status for processed requests */}
+                  {notification.type === "followRequest" &&
+                    notification.status !== "pending" && (
+                      <span
+                        className={`${styles.requestStatus} ${styles[notification.status]}`}
+                      >
+                        {notification.status === "accepted"
+                          ? "Accepted"
+                          : "Rejected"}
+                      </span>
+                    )}
                 </div>
               </div>
-            </Link>
+            </div>
           ))
         )}
       </div>

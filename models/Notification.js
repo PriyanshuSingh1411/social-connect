@@ -14,7 +14,7 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["like", "comment", "follow", "share"],
+      enum: ["like", "comment", "follow", "followRequest", "share"],
       required: true,
     },
     post: {
@@ -28,6 +28,11 @@ const notificationSchema = new mongoose.Schema(
     read: {
       type: Boolean,
       default: false,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "accepted", "rejected"],
+      default: "pending",
     },
   },
   {
