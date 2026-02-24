@@ -135,8 +135,15 @@ export async function PATCH(req, { params }) {
   try {
     await connectDB();
 
-    const { userId, name, bio, location, profilePicture, coverPicture } =
-      await req.json();
+    const {
+      userId,
+      name,
+      bio,
+      location,
+      profilePicture,
+      coverPicture,
+      isPrivate,
+    } = await req.json();
 
     if (userId !== params.id) {
       return NextResponse.json(
@@ -152,6 +159,7 @@ export async function PATCH(req, { params }) {
     if (profilePicture !== undefined)
       updateData.profilePicture = profilePicture;
     if (coverPicture !== undefined) updateData.coverPicture = coverPicture;
+    if (isPrivate !== undefined) updateData.isPrivate = isPrivate;
 
     const user = await User.findByIdAndUpdate(
       params.id,

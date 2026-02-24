@@ -15,22 +15,25 @@ export async function GET(req, { params }) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    // Check privacy - if account is private, only show to followers
+    // Check privacy - if account is private, only show to followers or own profile
     if (user.isPrivate) {
-      if (!currentUserId) {
+      // Allow if viewing own profile
+      if (currentUserId && currentUserId === params.id) {
+        // Own profile - allow access
+      } else if (!currentUserId) {
         return NextResponse.json(
           { message: "This account is private", users: [] },
           { status: 200 },
         );
-      }
-
-      // Check if current user is following this user
-      const currentUser = await User.findById(currentUserId);
-      if (!currentUser || !currentUser.following.includes(params.id)) {
-        return NextResponse.json(
-          { message: "This account is private", users: [] },
-          { status: 200 },
-        );
+      } else {
+        // Check if current user is following this user
+        const currentUser = await User.findById(currentUserId);
+        if (!currentUser || !currentUser.following.includes(params.id)) {
+          return NextResponse.json(
+            { message: "This account is private", users: [] },
+            { status: 200 },
+          );
+        }
       }
     }
 

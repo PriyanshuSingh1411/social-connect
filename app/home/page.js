@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import styles from "./home.module.css";
@@ -10,13 +10,13 @@ import styles from "./home.module.css";
 export default function HomePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newPost, setNewPost] = useState("");
   const [posting, setPosting] = useState(false);
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showSearch, setShowSearch] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showImagePreview, setShowImagePreview] = useState(false);
 
@@ -33,21 +33,22 @@ export default function HomePage() {
   }, [session]);
 
   useEffect(() => {
-    if (searchQuery.length > 0) {
-      searchUsers();
-    } else {
-      setUsers([]);
-    }
+    const delaySearch = setTimeout(() => {
+      if (searchQuery.length > 0) {
+        searchUsers();
+      } else {
+        setUsers([]);
+      }
+    }, 300);
+    return () => clearTimeout(delaySearch);
   }, [searchQuery]);
 
   const fetchPosts = async () => {
     try {
-      // First try to get all posts (global feed)
       const res = await axios.get("/api/posts");
       setPosts(res.data.posts);
     } catch (error) {
       console.error("Error fetching posts:", error);
-      // Fallback: try with userId to get followed users' posts
       try {
         const res = await axios.get(`/api/posts?userId=${session.user.id}`);
         setPosts(res.data.posts);
@@ -154,15 +155,107 @@ export default function HomePage() {
     );
   }
 
+  const navItems = [
+    {
+      href: "/home",
+      icon: (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+      ),
+      label: "Home",
+      active: pathname === "/home",
+    },
+    {
+      href: "/explore",
+      icon: (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+        </svg>
+      ),
+      label: "Explore",
+      active: pathname === "/explore",
+    },
+    {
+      href: "/chat",
+      icon: (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+      ),
+      label: "Chat",
+      active: pathname === "/chat",
+    },
+    {
+      href: "/notifications",
+      icon: (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M18 8A6 6 0 0 0 6 7-3 8c0 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+      ),
+      label: "Alerts",
+      active: pathname === "/notifications",
+    },
+    {
+      href: `/profile/${session?.user?.id}`,
+      icon: (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      ),
+      label: "Profile",
+      active: pathname?.startsWith("/profile"),
+    },
+  ];
+
   return (
     <div className={styles.container}>
-      {/* Left Sidebar */}
-      <aside className={styles.sidebar}>
-        <div className={styles.sidebarContent}>
+      {/* Header */}
+      <header className={styles.header}>
+        <div className={styles.headerContent}>
           <Link href="/home" className={styles.logo}>
             <svg
-              width="28"
-              height="28"
+              width="32"
+              height="32"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -177,128 +270,87 @@ export default function HomePage() {
             <span>SocialConnect</span>
           </Link>
 
+          {/* Navigation */}
           <nav className={styles.nav}>
-            <Link href="/home" className={styles.navItemActive}>
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`${styles.navItem} ${item.active ? styles.active : ""}`}
               >
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-              <span>Home</span>
-            </Link>
-            <Link href="/explore" className={styles.navItem}>
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-              </svg>
-              <span>Explore</span>
-            </Link>
-            <Link href="/stories" className={styles.navItem}>
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <circle cx="12" cy="12" r="4" fill="currentColor" />
-              </svg>
-              <span>Stories</span>
-            </Link>
-            <Link href="/chat" className={styles.navItem}>
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
-              <span>Chat</span>
-            </Link>
-            <Link href="/notifications" className={styles.navItem}>
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-              </svg>
-              <span>Notifications</span>
-            </Link>
-            <Link
-              href={`/profile/${session?.user?.id}`}
-              className={styles.navItem}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              <span>Profile</span>
-            </Link>
+                {item.icon}
+                <span>{item.label}</span>
+              </Link>
+            ))}
           </nav>
 
-          <button
-            className={styles.postButton}
-            onClick={() => document.getElementById("postInput")?.focus()}
-          >
-            Post
-          </button>
+          {/* Search */}
+          <div className={styles.searchContainer}>
+            <div className={styles.searchBox}>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={styles.searchInput}
+              />
+            </div>
 
-          <div className={styles.userInfo}>
-            <div className={styles.userAvatar}>
-              {session?.user?.name?.charAt(0).toUpperCase()}
-            </div>
-            <div className={styles.userDetails}>
-              <span className={styles.userName}>{session?.user?.name}</span>
-              <span className={styles.userHandle}>
-                @{session?.user?.username}
-              </span>
-            </div>
+            {users.length > 0 && (
+              <div className={styles.searchResults}>
+                {users.map((user) => (
+                  <Link
+                    key={user._id}
+                    href={`/profile/${user._id}`}
+                    className={styles.searchResultItem}
+                  >
+                    <div className={styles.searchResultAvatar}>
+                      {user.name?.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <div className={styles.searchResultName}>{user.name}</div>
+                      <div className={styles.searchResultHandle}>
+                        @{user.username}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
+
+          {/* User Avatar */}
+          <Link
+            href={`/profile/${session?.user?.id}`}
+            className={styles.userAvatar}
+          >
+            {session?.user?.name?.charAt(0).toUpperCase()}
+          </Link>
         </div>
-      </aside>
+      </header>
 
-      {/* Main Content */}
+      {/* Main Content - Centered */}
       <main className={styles.main}>
-        <header className={styles.header}>
-          <h1>Home</h1>
-        </header>
-
         {/* Create Post */}
         <div className={styles.createPost}>
           <div className={styles.createPostInput}>
-            <div className={styles.createPostAvatar}>
+            <Link
+              href={`/profile/${session?.user?.id}`}
+              className={styles.createPostAvatar}
+            >
               {session?.user?.name?.charAt(0).toUpperCase()}
-            </div>
+            </Link>
             <form onSubmit={handlePost} className={styles.postForm}>
               <input
                 id="postInput"
@@ -309,34 +361,39 @@ export default function HomePage() {
                 className={styles.postInput}
               />
               <div className={styles.postActions}>
-                <label htmlFor="imageInput" className={styles.imageUploadLabel}>
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
+                <div className={styles.postActionsLeft}>
+                  <label
+                    htmlFor="imageInput"
+                    className={styles.imageUploadLabel}
                   >
-                    <rect
-                      x="3"
-                      y="3"
-                      width="18"
-                      height="18"
-                      rx="2"
-                      ry="2"
-                    ></rect>
-                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                    <polyline points="21 15 16 10 5 21"></polyline>
-                  </svg>
-                </label>
-                <input
-                  id="imageInput"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageSelect}
-                  className={styles.imageInput}
-                />
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <rect
+                        x="3"
+                        y="3"
+                        width="18"
+                        height="18"
+                        rx="2"
+                        ry="2"
+                      ></rect>
+                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                      <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                  </label>
+                  <input
+                    id="imageInput"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className={styles.imageInput}
+                  />
+                </div>
                 <button
                   type="submit"
                   className={styles.postSubmit}
@@ -365,6 +422,16 @@ export default function HomePage() {
         <div className={styles.feed}>
           {posts.length === 0 ? (
             <div className={styles.emptyFeed}>
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
               <p>No posts yet. Be the first to post!</p>
             </div>
           ) : (
@@ -382,58 +449,39 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* Right Sidebar - Search */}
-      <aside className={styles.rightSidebar}>
-        <div className={styles.searchContainer}>
-          <div className={styles.searchBox}>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+      {/* Bottom Navigation - Mobile */}
+      <nav className={styles.bottomNav}>
+        <div className={styles.bottomNavContent}>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`${styles.bottomNavItem} ${item.active ? styles.active : ""}`}
             >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search users..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles.searchInput}
-            />
-          </div>
-
-          {users.length > 0 && (
-            <div className={styles.searchResults}>
-              {users.map((user) => (
-                <Link
-                  key={user._id}
-                  href={`/profile/${user._id}`}
-                  className={styles.searchResultItem}
-                >
-                  <div className={styles.searchResultAvatar}>
-                    {user.name?.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <div className={styles.searchResultName}>{user.name}</div>
-                    <div className={styles.searchResultHandle}>
-                      @{user.username}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-
-          <div className={styles.trending}>
-            <h3>Who to follow</h3>
-            <p className={styles.trendingHint}>Find friends to follow</p>
-          </div>
+              {item.icon}
+              <span>{item.label}</span>
+            </Link>
+          ))}
         </div>
-      </aside>
+      </nav>
+
+      {/* Floating Post Button - Mobile */}
+      <button
+        className={styles.floatingPostBtn}
+        onClick={() => document.getElementById("postInput")?.focus()}
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+      </button>
     </div>
   );
 }
