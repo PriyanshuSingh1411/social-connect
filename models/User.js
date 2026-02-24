@@ -70,6 +70,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isPrivate: {
+      type: Boolean,
+      default: false,
+    },
     bookmarkedPosts: [
       {
         type: mongoose.Schema.Types.ObjectId,

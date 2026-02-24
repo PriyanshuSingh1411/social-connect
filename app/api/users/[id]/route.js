@@ -29,13 +29,51 @@ export async function GET(req, { params }) {
   }
 }
 
-// Follow/Unfollow user
+// Follow/Unfollow user and Update profile
 export async function PUT(req, { params }) {
   try {
     await connectDB();
 
-    const { currentUserId, type } = await req.json();
+    const body = await req.json();
+    const {
+      currentUserId,
+      type,
+      name,
+      bio,
+      location,
+      profilePicture,
+      coverPicture,
+      isPrivate,
+    } = body;
 
+    // Handle profile update
+    if (type === "update") {
+      if (currentUserId !== params.id) {
+        return NextResponse.json(
+          { message: "You can only update your own profile" },
+          { status: 403 },
+        );
+      }
+
+      const updateData = {};
+      if (name) updateData.name = name;
+      if (bio !== undefined) updateData.bio = bio;
+      if (location !== undefined) updateData.location = location;
+      if (profilePicture !== undefined)
+        updateData.profilePicture = profilePicture;
+      if (coverPicture !== undefined) updateData.coverPicture = coverPicture;
+      if (isPrivate !== undefined) updateData.isPrivate = isPrivate;
+
+      const user = await User.findByIdAndUpdate(
+        params.id,
+        { $set: updateData },
+        { new: true },
+      ).select("-password");
+
+      return NextResponse.json({ user });
+    }
+
+    // Handle follow/unfollow
     if (currentUserId === params.id) {
       return NextResponse.json(
         { message: "You cannot follow yourself" },
@@ -84,9 +122,9 @@ export async function PUT(req, { params }) {
       isFollowing: currentUser.following.includes(params.id),
     });
   } catch (error) {
-    console.error("Follow user error:", error);
+    console.error("PUT user error:", error);
     return NextResponse.json(
-      { message: "Error following/unfollowing user" },
+      { message: "Error processing request" },
       { status: 500 },
     );
   }

@@ -17,6 +17,14 @@ export default function ProfilePage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
 
+  // Modal states
+  const [showFollowersModal, setShowFollowersModal] = useState(false);
+  const [showFollowingModal, setShowFollowingModal] = useState(false);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
+  const [loadingFollowers, setLoadingFollowers] = useState(false);
+  const [loadingFollowing, setLoadingFollowing] = useState(false);
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
@@ -49,6 +57,48 @@ export default function ProfilePage() {
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
+  };
+
+  const fetchFollowers = async () => {
+    setLoadingFollowers(true);
+    try {
+      const res = await axios.get(
+        `/api/users/${params.id}/followers?currentUserId=${session?.user?.id}`,
+      );
+      setFollowers(res.data.users);
+    } catch (error) {
+      console.error("Error fetching followers:", error);
+    } finally {
+      setLoadingFollowers(false);
+    }
+  };
+
+  const fetchFollowing = async () => {
+    setLoadingFollowing(true);
+    try {
+      const res = await axios.get(
+        `/api/users/${params.id}/following?currentUserId=${session?.user?.id}`,
+      );
+      setFollowing(res.data.users);
+    } catch (error) {
+      console.error("Error fetching following:", error);
+    } finally {
+      setLoadingFollowing(false);
+    }
+  };
+
+  const handleFollowersClick = () => {
+    if (followers.length === 0) {
+      fetchFollowers();
+    }
+    setShowFollowersModal(true);
+  };
+
+  const handleFollowingClick = () => {
+    if (following.length === 0) {
+      fetchFollowing();
+    }
+    setShowFollowingModal(true);
   };
 
   const handleFollow = async () => {
@@ -156,7 +206,7 @@ export default function ProfilePage() {
               </button>
             )}
             {isOwnProfile && (
-              <Link href="/home" className={styles.editButton}>
+              <Link href="/edit-profile" className={styles.editButton}>
                 Edit Profile
               </Link>
             )}
@@ -208,18 +258,24 @@ export default function ProfilePage() {
           </div>
 
           <div className={styles.stats}>
-            <div className={styles.stat}>
-              <span className={styles.statValue}>
-                {user.following?.length || 0}
-              </span>
-              <span className={styles.statLabel}>Following</span>
-            </div>
-            <div className={styles.stat}>
+            <button
+              className={styles.statButton}
+              onClick={handleFollowersClick}
+            >
               <span className={styles.statValue}>
                 {user.followers?.length || 0}
               </span>
               <span className={styles.statLabel}>Followers</span>
-            </div>
+            </button>
+            <button
+              className={styles.statButton}
+              onClick={handleFollowingClick}
+            >
+              <span className={styles.statValue}>
+                {user.following?.length || 0}
+              </span>
+              <span className={styles.statLabel}>Following</span>
+            </button>
           </div>
         </div>
       </div>
@@ -327,6 +383,145 @@ export default function ProfilePage() {
           ))
         )}
       </div>
+
+      {/* Followers Modal */}
+      {showFollowersModal && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setShowFollowersModal(false)}
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2>Followers</h2>
+              <button
+                className={styles.closeButton}
+                onClick={() => setShowFollowersModal(false)}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              {loadingFollowers ? (
+                <div className={styles.modalLoading}>
+                  <div className={styles.spinner}></div>
+                </div>
+              ) : followers.length === 0 ? (
+                <div className={styles.emptyList}>
+                  <p>No followers yet</p>
+                </div>
+              ) : (
+                <ul className={styles.userList}>
+                  {followers.map((follower) => (
+                    <li key={follower._id} className={styles.userListItem}>
+                      <Link
+                        href={`/profile/${follower._id}`}
+                        className={styles.userListLink}
+                      >
+                        <div className={styles.userListAvatar}>
+                          {follower.profilePicture ? (
+                            <img
+                              src={follower.profilePicture}
+                              alt={follower.name}
+                            />
+                          ) : (
+                            follower.name?.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        <div className={styles.userListInfo}>
+                          <span className={styles.userListName}>
+                            {follower.name}
+                          </span>
+                          <span className={styles.userListUsername}>
+                            @{follower.username}
+                          </span>
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Following Modal */}
+      {showFollowingModal && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setShowFollowingModal(false)}
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2>Following</h2>
+              <button
+                className={styles.closeButton}
+                onClick={() => setShowFollowingModal(false)}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              {loadingFollowing ? (
+                <div className={styles.modalLoading}>
+                  <div className={styles.spinner}></div>
+                </div>
+              ) : following.length === 0 ? (
+                <div className={styles.emptyList}>
+                  <p>Not following anyone yet</p>
+                </div>
+              ) : (
+                <ul className={styles.userList}>
+                  {following.map((user) => (
+                    <li key={user._id} className={styles.userListItem}>
+                      <Link
+                        href={`/profile/${user._id}`}
+                        className={styles.userListLink}
+                      >
+                        <div className={styles.userListAvatar}>
+                          {user.profilePicture ? (
+                            <img src={user.profilePicture} alt={user.name} />
+                          ) : (
+                            user.name?.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        <div className={styles.userListInfo}>
+                          <span className={styles.userListName}>
+                            {user.name}
+                          </span>
+                          <span className={styles.userListUsername}>
+                            @{user.username}
+                          </span>
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
