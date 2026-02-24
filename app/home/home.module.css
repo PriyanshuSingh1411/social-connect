@@ -56,29 +56,15 @@
 }
 
 /* Mobile Header - Hide nav, show search */
-@media (max-width: 768px) {
-  .nav {
-    display: none;
-  }
-
-  .headerContent {
-    gap: var(--space-2);
-  }
-
-  .searchContainer {
-    flex: 1;
-    width: auto;
-    max-width: 100%;
-  }
-
-  .logo span {
-    display: none;
-  }
-
-  .userAvatar {
-    width: 32px;
-    height: 32px;
-    font-size: 0.75rem;
+@media screen and (max-width:768px) and (min-width:0px) {
+  
+.nav { display:none !important; }
+  
+.headerContent { gap:var(--space-2); }
+.searchContainer { flex-grow:1; width:auto; max-width:none; }
+.logo span { display:none !important; }
+.userAvatar { width:-webkit-fill-available; height:-webkit-fill-available;}
+}
   }
 }
 
