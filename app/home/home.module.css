@@ -56,15 +56,25 @@
 }
 
 /* Mobile Header - Hide nav, show search */
-@media screen and (max-width:768px) and (min-width:0px) {
-  
-.nav { display:none !important; }
-  
-.headerContent { gap:var(--space-2); }
-.searchContainer { flex-grow:1; width:auto; max-width:none; }
-.logo span { display:none !important; }
-.userAvatar { width:-webkit-fill-available; height:-webkit-fill-available;}
-}
+@media screen and (max-width: 768px) and (min-width: 0px) {
+  .nav {
+    display: none !important;
+  }
+
+  .headerContent {
+    gap: var(--space-2);
+  }
+  .searchContainer {
+    flex-grow: 1;
+    width: auto;
+    max-width: none;
+  }
+  .logo span {
+    display: none !important;
+  }
+  .userAvatar {
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
   }
 }
 
