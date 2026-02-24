@@ -19,6 +19,7 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [showImagePreview, setShowImagePreview] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -29,8 +30,20 @@ export default function HomePage() {
   useEffect(() => {
     if (session?.user?.id) {
       fetchPosts();
+      fetchUnreadCount();
     }
   }, [session]);
+
+  const fetchUnreadCount = async () => {
+    try {
+      const res = await axios.get(
+        `/api/notifications?userId=${session.user.id}`,
+      );
+      setUnreadCount(res.data.unreadCount || 0);
+    } catch (error) {
+      console.error("Error fetching unread count:", error);
+    }
+  };
 
   useEffect(() => {
     const delaySearch = setTimeout(() => {
@@ -212,17 +225,39 @@ export default function HomePage() {
     {
       href: "/notifications",
       icon: (
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path d="M18 8A6 6 0 0 0 6 7-3 8c0 9-3 9h18s-3-2-3-9" />
-          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-        </svg>
+        <div style={{ position: "relative" }}>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M18 8A6 6 0 0 0 6 7-3 8c0 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          {unreadCount > 0 && (
+            <span
+              style={{
+                position: "absolute",
+                top: "-6px",
+                right: "-8px",
+                backgroundColor: "#ef4444",
+                color: "white",
+                borderRadius: "10px",
+                padding: "1px 5px",
+                fontSize: "10px",
+                fontWeight: "bold",
+                minWidth: "16px",
+                textAlign: "center",
+                border: "2px solid white",
+              }}
+            >
+              {unreadCount > 99 ? "99+" : unreadCount}
+            </span>
+          )}
+        </div>
       ),
       label: "Alerts",
       active: pathname === "/notifications",
