@@ -370,7 +370,11 @@ export default function HomePage() {
             href={`/profile/${session?.user?.id}`}
             className={styles.userAvatar}
           >
-            {session?.user?.name?.charAt(0).toUpperCase()}
+            {session?.user?.profilePicture ? (
+              <img src={session.user.profilePicture} alt={session.user.name} />
+            ) : (
+              session?.user?.name?.charAt(0).toUpperCase()
+            )}
           </Link>
         </div>
       </header>
@@ -384,7 +388,14 @@ export default function HomePage() {
               href={`/profile/${session?.user?.id}`}
               className={styles.createPostAvatar}
             >
-              {session?.user?.name?.charAt(0).toUpperCase()}
+              {session?.user?.profilePicture ? (
+                <img
+                  src={session.user.profilePicture}
+                  alt={session.user.name}
+                />
+              ) : (
+                session?.user?.name?.charAt(0).toUpperCase()
+              )}
             </Link>
             <form onSubmit={handlePost} className={styles.postForm}>
               <input
