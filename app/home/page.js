@@ -556,7 +556,11 @@ function PostCard({ post, currentUserId, onLike, onComment, onDelete }) {
           href={`/profile/${post.userId?._id}`}
           className={styles.postAvatar}
         >
-          {post.userId?.name?.charAt(0).toUpperCase()}
+          {post.userId?.profilePicture ? (
+            <img src={post.userId.profilePicture} alt={post.userId.name} />
+          ) : (
+            post.userId?.name?.charAt(0).toUpperCase()
+          )}
         </Link>
         <div className={styles.postUserInfo}>
           <Link
