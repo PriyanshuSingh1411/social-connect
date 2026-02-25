@@ -223,6 +223,13 @@ export default function ChatPage() {
     const existing = conversations.find((c) => c.partner._id === userId);
 
     if (existing) {
+      // Clear unread count when opening chat
+      if (existing.unreadCount > 0) {
+        const updatedConversations = conversations.map((c) =>
+          c.partner._id === userId ? { ...c, unreadCount: 0 } : c,
+        );
+        setConversations(updatedConversations);
+      }
       setSelectedChat(existing);
     } else {
       // Create a new conversation object
@@ -326,7 +333,7 @@ export default function ChatPage() {
             <div
               key={index}
               className={`${styles.conversation} ${selectedChat?.partner?._id === conv.partner._id ? styles.active : ""}`}
-              onClick={() => setSelectedChat(conv)}
+              onClick={() => startChat(conv.partner)}
             >
               <div className={styles.avatarContainer}>
                 <img
