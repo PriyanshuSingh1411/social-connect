@@ -359,6 +359,10 @@
     border-right: none;
   }
 
+  .sidebar.hidden {
+    display: none;
+  }
+
   .header {
     padding: 1rem;
   }

@@ -280,7 +280,7 @@ export default function ChatPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.sidebar}>
+      <div className={`${styles.sidebar} ${selectedChat ? styles.hidden : ""}`}>
         <div className={styles.header}>
           <h2>Messages</h2>
         </div>
@@ -356,7 +356,9 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <div className={styles.chatArea}>
+      <div
+        className={`${styles.chatArea} ${selectedChat ? styles.active : ""}`}
+      >
         {selectedChat ? (
           <>
             <div className={styles.chatHeader}>
