@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import connectDB from "../../../lib/db";
-import User from "../../../models/User";
+import connectDB from "../../../../lib/db";
+import User from "../../../../models/User";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../../lib/auth";
+import { authOptions } from "../../../../lib/auth";
 
 // Set user online status
 export async function POST(req) {
@@ -46,9 +46,9 @@ export async function GET(req) {
       return NextResponse.json({ users: [] });
     }
 
-    const users = await User.find({ _id: { $in: userIds } }).select(
-      "_id isOnline lastSeen",
-    );
+    const users = await User.find({ _id: { $in: userIds } })
+      .select("_id isOnline lastSeen")
+      .limit(50); // Limit to 50 users max
 
     const onlineStatus = {};
     users.forEach((user) => {

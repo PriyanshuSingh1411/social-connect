@@ -85,7 +85,7 @@ const userSchema = new mongoose.Schema(
     typingUsers: [
       {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        expiresAt: { type: Date },
+        expiresAt: { type: Date, index: { expires: 10 } }, // Auto-delete after 10 seconds
       },
     ],
     bookmarkedPosts: [

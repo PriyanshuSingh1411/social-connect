@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import connectDB from "../../../lib/db";
-import User from "../../../models/User";
+import connectDB from "../../../../lib/db";
+import User from "../../../../models/User";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../../lib/auth";
+import { authOptions } from "../../../../lib/auth";
 
 // Set typing status
 export async function POST(req) {
@@ -65,11 +65,20 @@ export async function GET(req) {
       return NextResponse.json({ typingUsers: [] });
     }
 
-    // Filter out expired typing users
+    // Filter out expired typing users and limit to 10
     const now = new Date();
-    const activeTypingUsers = user.typingUsers.filter(
-      (u) => u.expiresAt > now && u.userId,
-    );
+    const activeTypingUsers = user.typingUsers
+      .filter((u) => u.expiresAt > now && u.userId)
+      .slice(0, 10); // Limit to 10 users max
+
+    // Clean up expired users from database
+    if (user.typingUsers.length > activeTypingUsers.length) {
+      await User.findByIdAndUpdate(session.user.id, {
+        $pull: {
+          typingUsers: { expiresAt: { $lt: now } },
+        },
+      });
+    }
 
     return NextResponse.json({ typingUsers: activeTypingUsers });
   } catch (error) {

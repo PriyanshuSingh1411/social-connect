@@ -218,24 +218,41 @@ export default function ChatPage() {
     }
   };
 
-  const startChat = (user) => {
-    const existing = conversations.find(
-      (c) => c.partner._id === user._id || c.partner._id === user.id,
-    );
+  const startChat = async (user) => {
+    const userId = user._id || user.id;
+    const existing = conversations.find((c) => c.partner._id === userId);
 
     if (existing) {
       setSelectedChat(existing);
     } else {
-      setSelectedChat({
-        partner: user._id
-          ? user
-          : {
-              _id: user.id,
-              name: user.name,
-              username: user.username,
-              profilePicture: user.profilePicture,
-            },
-      });
+      // Create a new conversation object
+      const newChat = {
+        partner: {
+          _id: userId,
+          name: user.name,
+          username: user.username,
+          profilePicture: user.profilePicture,
+        },
+        lastMessage: null,
+        unreadCount: 0,
+      };
+
+      // Add to conversations list
+      setConversations((prev) => [newChat, ...prev]);
+      setSelectedChat(newChat);
+
+      // Fetch existing messages if any
+      try {
+        const res = await axios.get(`/api/messages?userId=${userId}`);
+        if (res.data && res.data.length > 0) {
+          setMessages(res.data);
+        } else {
+          setMessages([]);
+        }
+      } catch (error) {
+        console.error("Error fetching messages for new chat:", error);
+        setMessages([]);
+      }
     }
     setSearchResults([]);
     setSearchQuery("");
