@@ -18,6 +18,15 @@ export async function GET(req, { params }) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
+    // Check if current user has blocked this user
+    let isBlocked = false;
+    if (currentUserId) {
+      const currentUser = await User.findById(currentUserId);
+      if (currentUser?.blockedUsers?.includes(params.id)) {
+        isBlocked = true;
+      }
+    }
+
     const posts = await Post.find({ userId: params.id })
       .populate("userId", "name username profilePicture")
       .sort({ createdAt: -1 });
@@ -27,7 +36,7 @@ export async function GET(req, { params }) {
     let isPending = false;
     let isFollowBack = false;
 
-    if (currentUserId && currentUserId !== params.id) {
+    if (currentUserId && currentUserId !== params.id && !isBlocked) {
       const currentUser = await User.findById(currentUserId);
       if (currentUser) {
         isFollowing = currentUser.following.includes(params.id);
@@ -52,6 +61,7 @@ export async function GET(req, { params }) {
       isFollowing,
       isPending,
       isFollowBack,
+      isBlocked,
     });
   } catch (error) {
     console.error("Get user error:", error);
@@ -119,6 +129,14 @@ export async function PUT(req, { params }) {
 
     if (!userToFollow || !currentUser) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    // Check if user is blocked
+    if (currentUser.blockedUsers?.includes(params.id)) {
+      return NextResponse.json(
+        { message: "You cannot interact with this user" },
+        { status: 403 },
+      );
     }
 
     if (type === "follow") {
@@ -236,6 +254,41 @@ export async function PUT(req, { params }) {
           type === "acceptRequest"
             ? "Follow request accepted"
             : "Follow request rejected",
+      });
+    }
+
+    // Handle block/unblock user
+    if (type === "block" || type === "unblock") {
+      if (!currentUser.blockedUsers) {
+        currentUser.blockedUsers = [];
+      }
+
+      const isBlocked = currentUser.blockedUsers.includes(params.id);
+
+      if (type === "block") {
+        if (!isBlocked) {
+          currentUser.blockedUsers.push(params.id);
+          // Also unfollow if following
+          currentUser.following = currentUser.following.filter(
+            (id) => id.toString() !== params.id,
+          );
+          userToFollow.followers = userToFollow.followers.filter(
+            (id) => id.toString() !== currentUserId,
+          );
+        }
+      } else {
+        // Unblock
+        currentUser.blockedUsers = currentUser.blockedUsers.filter(
+          (id) => id.toString() !== params.id,
+        );
+      }
+
+      await currentUser.save();
+      await userToFollow.save();
+
+      return NextResponse.json({
+        isBlocked: type === "block",
+        message: type === "block" ? "User blocked" : "User unblocked",
       });
     }
 

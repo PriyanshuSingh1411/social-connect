@@ -131,6 +131,13 @@ export default function ChatPage() {
     try {
       const res = await axios.get(`/api/messages?userId=${userId}`);
       setMessages(res.data);
+
+      // Mark messages as read
+      try {
+        await axios.put("/api/messages", { senderId: userId });
+      } catch (readError) {
+        console.error("Error marking messages as read:", readError);
+      }
     } catch (error) {
       console.error("Error fetching messages:", error);
     }

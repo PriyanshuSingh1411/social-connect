@@ -48,6 +48,41 @@ const postSchema = new mongoose.Schema(
         type: String,
       },
     ],
+    isEdited: {
+      type: Boolean,
+      default: false,
+    },
+    reactions: {
+      type: Map,
+      of: {
+        type: Number,
+        default: 0,
+      },
+      default: {},
+    },
+    mentions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    // For repost/share feature
+    sharedPost: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
+      default: null,
+    },
+    // For multiple images (carousel)
+    images: [
+      {
+        type: String,
+      },
+    ],
+    // For video posts
+    video: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

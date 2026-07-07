@@ -1,4 +1,4 @@
-# SocialConnect - TY College Project
+# Spark - A Modern Social Media Platform
 
 A fullstack social media platform built with Next.js, MongoDB, and NextAuth.js.
 
@@ -13,8 +13,8 @@ A fullstack social media platform built with Next.js, MongoDB, and NextAuth.js.
 
 ### Post Management
 
-- Create posts with text content
-- Like/unlike posts
+- Create posts with text content and images
+- Like/unlike posts with reactions
 - Comment on posts
 - Delete your own posts
 - Hashtag support
@@ -38,11 +38,16 @@ A fullstack social media platform built with Next.js, MongoDB, and NextAuth.js.
 - Get notified when someone comments on your post
 - Get notified when someone follows you
 
-### UI/UX
+### Messaging
 
-- Modern, responsive design
-- Dark sidebar with light content area
-- Smooth interactions and transitions
+- Real-time chat with other users
+- Online status indicators
+- Typing indicators
+
+### Stories
+
+- Share temporary stories (24h)
+- Image and text stories
 
 ## Tech Stack
 
@@ -63,25 +68,22 @@ A fullstack social media platform built with Next.js, MongoDB, and NextAuth.js.
 
 1. Clone the repository:
 
-```
-bash
-git clone <repository-url>
-cd social-connect
+```bash
+git clone https://github.com/yourusername/spark-social.git
+cd spark-social
 ```
 
 2. Install dependencies:
 
-```
-bash
+```bash
 npm install
 ```
 
 3. Configure environment variables:
    Create a `.env.local` file in the root directory:
 
-```
-env
-MONGODB_URI=mongodb://localhost:27017/socialconnect
+```env
+MONGODB_URI=mongodb://localhost:27017/spark
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-secret-key-here
 JWT_SECRET=your-jwt-secret-here
@@ -92,8 +94,7 @@ JWT_SECRET=your-jwt-secret-here
 
 5. Run the development server:
 
-```
-bash
+```bash
 npm run dev
 ```
 
@@ -102,7 +103,7 @@ npm run dev
 ## Project Structure
 
 ```
-social-connect/
+spark-social/
 ├── app/
 │   ├── api/
 │   │   ├── auth/
@@ -120,6 +121,8 @@ social-connect/
 │   ├── signup/page.js
 │   ├── profile/[id]/page.js
 │   ├── notifications/page.js
+│   ├── explore/page.js
+│   ├── chat/page.js
 │   ├── layout.js
 │   ├── page.js
 │   └── globals.css
@@ -149,7 +152,7 @@ social-connect/
 - `GET /api/posts` - Get feed posts
 - `POST /api/posts` - Create new post
 - `GET /api/posts/[id]` - Get single post
-- `PUT /api/posts/[id]` - Like/unlike or comment
+- `PUT /api/posts/[id]` - Like/unlike, comment, or react
 - `DELETE /api/posts/[id]` - Delete post
 
 ### Users
@@ -164,20 +167,10 @@ social-connect/
 - `GET /api/notifications?userId=id` - Get notifications
 - `PUT /api/notifications` - Mark as read
 
-## Screenshots
-
-The app includes:
-
-- Landing page with login/signup
-- Home feed with posts
-- User profile pages
-- Notifications page
-- Search functionality
-
 ## License
 
-This project is for educational purposes as a TY B.Sc. IT college project.
+MIT License
 
 ## Author
 
-Created as a TY College Project
+Created with passion for building great social experiences

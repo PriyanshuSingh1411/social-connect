@@ -46,27 +46,35 @@ export default function LoginPage() {
 
   return (
     <div className={styles.container}>
+      {/* Animated Background */}
+      <div className={styles.backgroundBlur}>
+        <div className={styles.bgBlob1}></div>
+        <div className={styles.bgBlob2}></div>
+      </div>
+
       <div className={styles.formWrapper}>
         <div className={styles.logo}>
-          <svg
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <circle cx="18" cy="5" r="3" />
-            <circle cx="6" cy="12" r="3" />
-            <circle cx="18" cy="19" r="3" />
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-          </svg>
-          <span>SocialConnect</span>
+          <div className={styles.logoIcon}>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+          </div>
+          <span className={styles.logoText}>Spark</span>
         </div>
 
         <h1 className={styles.title}>Welcome back</h1>
-        <p className={styles.subtitle}>Log in to your account</p>
+        <p className={styles.subtitle}>Log in to continue sharing your spark</p>
 
         {error && <div className={styles.error}>{error}</div>}
 
@@ -107,6 +115,21 @@ export default function LoginPage() {
         <p className={styles.switchAuth}>
           Don't have an account? <Link href="/signup">Sign up</Link>
         </p>
+
+        <Link href="/" className={styles.backHome}>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          Back to home
+        </Link>
       </div>
     </div>
   );

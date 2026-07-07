@@ -94,6 +94,12 @@ const userSchema = new mongoose.Schema(
         ref: "Post",
       },
     ],
+    blockedUsers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,

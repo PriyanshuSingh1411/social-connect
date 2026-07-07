@@ -1,7 +1,7 @@
 {
-  "name": "social-connect",
+  "name": "spark-social",
   "version": "1.0.0",
-  "description": "A fullstack social media platform for TY college project",
+  "description": "A modern social media platform for connecting with friends",
   "private": true,
   "scripts": {
     "dev": "next dev",
