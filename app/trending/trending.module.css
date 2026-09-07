@@ -1,0 +1,232 @@
+.container {
+  min-height: 100vh;
+  background: var(--background);
+}
+
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--background);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.searchContainer {
+  flex: 1;
+  max-width: 400px;
+  position: relative;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--background-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+}
+
+.searchBox svg {
+  color: var(--foreground-muted);
+}
+
+.searchInput {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--foreground);
+  font-size: 14px;
+}
+
+.searchInput::placeholder {
+  color: var(--foreground-muted);
+}
+
+.searchResults {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 8px;
+  background: var(--background-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.searchResultItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--foreground);
+  transition: background 0.2s;
+}
+
+.searchResultItem:hover {
+  background: var(--background-tertiary);
+}
+
+.searchResultAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.searchResultName {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.searchResultHandle {
+  font-size: 12px;
+  color: var(--foreground-muted);
+}
+
+
+.trendingHeader {
+  margin-bottom: 32px;
+}
+
+.trendingHeader h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+
+.trendingHeader p {
+  color: var(--foreground-muted);
+  font-size: 16px;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 64px 32px;
+  background: var(--background-secondary);
+  border-radius: 16px;
+}
+
+.emptyState svg {
+  color: var(--foreground-muted);
+  margin-bottom: 16px;
+}
+
+.emptyState h2 {
+  font-size: 20px;
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+
+.emptyState p {
+  color: var(--foreground-muted);
+}
+
+.hashtagsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hashtagCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--background-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.hashtagCard:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hashtagRank {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  min-width: 32px;
+}
+
+.hashtagInfo {
+  flex: 1;
+}
+
+.hashtagInfo h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 4px;
+}
+
+.hashtagCount {
+  font-size: 14px;
+  color: var(--foreground-muted);
+}
+
+.hashtagTrend {
+  color: #10b981;
+}
+
+.suggestions {
+  margin-top: 40px;
+  padding: 24px;
+  background: var(--background-secondary);
+  border-radius: 12px;
+}
+
+.suggestions h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 16px;
+}
+
+.suggestions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.suggestions li {
+  padding: 8px 0;
+  color: var(--foreground-muted);
+  font-size: 14px;
+}
+
+.suggestions li::before {
+  content: "•";
+  color: var(--primary);
+  margin-right: 8px;
+}
+

@@ -1,0 +1,1196 @@
+/* ===== HOME PAGE ===== */
+/* Sidebar/nav styles removed — navigation now lives entirely in the
+   shared AppShell component. This file covers only this page's own
+   content: search, create-post card, and the feed. */
+
+.searchContainer {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--gray-100);
+  border-radius: var(--radius-full);
+  transition: var(--transition);
+  border: 2px solid transparent;
+}
+
+.searchBox:focus-within {
+  background: var(--background);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(232, 93, 76, 0.1);
+}
+
+.searchBox svg {
+  color: var(--foreground-muted);
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  flex: 1;
+  font-size: 0.9375rem;
+  color: var(--foreground);
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--foreground-muted);
+}
+
+/* Search Results Dropdown */
+.searchResults {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 0;
+  right: 0;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  z-index: 200;
+  overflow: hidden;
+  animation: scaleIn 0.2s ease-out;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.searchResultItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.searchResultItem:hover {
+  background: var(--gray-100);
+}
+
+.searchResultAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.searchResultName {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--foreground);
+}
+
+.searchResultHandle {
+  color: var(--foreground-muted);
+  font-size: 0.8125rem;
+}
+
+
+.createPostCard {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.createPostCard:hover {
+  box-shadow: var(--shadow);
+}
+
+.createPostHeader {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.createPostAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.createPostAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.createPostForm {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.postInput {
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--foreground);
+  outline: none;
+  width: 100%;
+  line-height: 1.5;
+  resize: none;
+  min-height: 40px;
+}
+
+.postInput::placeholder {
+  color: var(--foreground-muted);
+}
+
+.postActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-light);
+}
+
+.postActionsLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.imageUploadLabel {
+  cursor: pointer;
+  color: var(--primary);
+  padding: var(--space-2);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imageUploadLabel:hover {
+  background: rgba(232, 93, 76, 0.1);
+  transform: scale(1.1);
+}
+
+.imageUploadLabel svg {
+  width: 22px;
+  height: 22px;
+}
+
+.imageInput {
+  display: none;
+}
+
+.imagePreview {
+  position: relative;
+  margin-top: var(--space-3);
+  display: inline-block;
+  animation: scaleIn 0.2s ease-out;
+}
+
+.imagePreview img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border);
+  object-fit: cover;
+  box-shadow: var(--shadow-lg);
+}
+
+.removeImage {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+  color: white;
+  border: 2px solid var(--background);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  transition: var(--transition);
+  box-shadow: var(--shadow-md);
+}
+
+.removeImage:hover {
+  transform: scale(1.15);
+  background: var(--primary-dark);
+}
+
+.postSubmit {
+  padding: var(--space-3) var(--space-6);
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.postSubmit:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.postSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== POSTS FEED ===== */
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.emptyFeed {
+  padding: var(--space-16) var(--space-4);
+  text-align: center;
+  color: var(--foreground-muted);
+}
+
+.emptyFeed svg {
+  width: 72px;
+  height: 72px;
+  margin-bottom: var(--space-4);
+  color: var(--gray-300);
+}
+
+.emptyFeed p {
+  font-size: 1.0625rem;
+}
+
+/* ===== POST CARD ===== */
+.postCard {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  transition: var(--transition-fast);
+  animation: fadeIn 0.4s ease-out;
+}
+
+.postCard:hover {
+  box-shadow: var(--shadow);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.postHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.postAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.postAvatar:hover {
+  box-shadow: var(--shadow);
+}
+
+.postAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.postUserInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.postUserName {
+  font-weight: 700;
+  color: var(--foreground);
+  font-size: 1rem;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.postUserName:hover {
+  color: var(--primary);
+}
+
+.postMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.postUserHandle,
+.postTime {
+  color: var(--foreground-muted);
+  font-size: 0.875rem;
+}
+
+.postMenu {
+  padding: var(--space-2);
+  background: transparent;
+  border: none;
+  color: var(--foreground-muted);
+  cursor: pointer;
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.postMenu:hover {
+  background: var(--gray-100);
+  color: var(--foreground);
+}
+
+/* Post Content */
+.postContent {
+  margin-bottom: var(--space-4);
+  padding-left: 60px;
+}
+
+.postContent p {
+  line-height: 1.6;
+  white-space: pre-wrap;
+  font-size: 1rem;
+  color: var(--foreground);
+}
+
+.postImage {
+  margin-top: var(--space-3);
+  width: 100%;
+  max-width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+/* Post Actions (per-post action row, distinct from the create-post
+   form's .postActions above — these previously shared one selector
+   name, so this rule silently overrode the other everywhere) */
+.postCardActions {
+  display: flex;
+  gap: var(--space-2);
+  padding-left: 60px;
+}
+
+.editedLabel {
+  font-size: 0.75rem;
+  color: var(--foreground-muted);
+  margin-left: var(--space-2);
+}
+
+.reactionWrapper {
+  position: relative;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: transparent;
+  border: none;
+  color: var(--foreground-muted);
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.actionBtn:hover {
+  background: rgba(232, 93, 76, 0.1);
+  color: var(--primary);
+}
+
+.actionBtn.liked {
+  color: var(--primary);
+}
+
+.actionBtn.liked:hover {
+  background: rgba(232, 93, 76, 0.15);
+}
+
+/* Reaction Button */
+
+.reactionsPopup {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 8px;
+  background: var(--background);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  gap: var(--space-1);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border);
+  animation: scaleIn 0.2s ease-out;
+}
+
+.reactionOption {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-full);
+  transition: var(--transition);
+}
+
+.reactionOption:hover {
+  transform: scale(1.3);
+  background: var(--gray-100);
+}
+
+/* ===== COMMENTS SECTION ===== */
+.commentsSection {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  padding-left: 60px;
+  border-top: 1px solid var(--border-light);
+}
+
+.comment {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.commentAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--gray-200);
+  color: var(--foreground-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.commentAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.commentContent {
+  flex: 1;
+  background: var(--gray-100);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+}
+
+.commentUserName {
+  font-weight: 700;
+  font-size: 0.8125rem;
+  margin-right: var(--space-2);
+  color: var(--foreground);
+}
+
+.commentContent p {
+  font-size: 0.875rem;
+  margin-top: 2px;
+  color: var(--foreground-secondary);
+  line-height: 1.4;
+}
+
+.commentForm {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  align-items: center;
+}
+
+.commentInput {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  transition: var(--transition);
+}
+
+.commentInput:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(232, 93, 76, 0.1);
+}
+
+.commentSubmit {
+  padding: var(--space-2) var(--space-4);
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.commentSubmit:hover {
+  background: var(--primary-hover);
+}
+
+.commentDeleteBtn {
+  padding: 4px;
+  background: transparent;
+  border: none;
+  color: var(--foreground-muted);
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.commentDeleteBtn:hover {
+  background: var(--red-light);
+  color: var(--red);
+}
+
+/* Edit Form */
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.editTextarea {
+  width: 100%;
+  padding: var(--space-3);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 1rem;
+  resize: none;
+  transition: var(--transition);
+}
+
+.editTextarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.editActions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  padding: var(--space-2) var(--space-4);
+  background: var(--gray-100);
+  color: var(--foreground);
+  border: none;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.cancelBtn:hover {
+  background: var(--gray-200);
+}
+
+.saveBtn {
+  padding: var(--space-2) var(--space-4);
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.saveBtn:hover {
+  background: var(--primary-hover);
+}
+
+/* ===== FLOATING ACTION BUTTON ===== */
+
+/* ===== LOADING STATE ===== */
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--background);
+}
+
+.loadingContainer .spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--gray-200);
+  border-top-color: var(--primary);
+  border-radius: var(--radius-full);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Mobile */
+@media (max-width: 768px) {
+  .searchContainer {
+    max-width: none;
+  }
+
+  .postContent,
+  .postActions,
+  .commentsSection {
+    padding-left: 0;
+  }
+
+  .postCard {
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+
+  .postAvatar,
+  .createPostAvatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .createPostCard {
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+
+}
+
+/* Extra Small */
+@media (max-width: 480px) {
+  .postContent p {
+    font-size: 0.9375rem;
+  }
+
+  .actionBtn {
+    padding: var(--space-2);
+    font-size: 0.8125rem;
+  }
+
+  .actionBtn span:last-child {
+    display: none;
+  }
+}
+
+
+/* Delete Confirmation Modal */
+
+.deleteModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  animation: deleteModalFadeIn 0.2s ease;
+}
+
+.deleteModal {
+  width: min(420px, 100%);
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: deleteModalSlideUp 0.2s ease;
+}
+
+.deleteModalIcon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(220, 70, 70, 0.1);
+  color: #dc4646;
+}
+
+.deleteModal h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.deleteModal p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #777;
+}
+
+.deleteModalActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.deleteCancelButton,
+.deleteConfirmButton {
+  flex: 1;
+  height: 46px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+}
+
+.deleteCancelButton {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: transparent;
+  color: var(--foreground);
+}
+
+.deleteConfirmButton {
+  border: none;
+  background: #dc4646;
+  color: white;
+}
+
+.deleteCancelButton:hover:not(:disabled),
+.deleteConfirmButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.deleteCancelButton:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.deleteConfirmButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.deleteCancelButton:disabled,
+.deleteConfirmButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@keyframes deleteModalFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes deleteModalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .deleteModal {
+    padding: 24px 20px;
+    border-radius: 18px;
+  }
+
+  .deleteModalActions {
+    flex-direction: column-reverse;
+  }
+
+  .deleteCancelButton,
+  .deleteConfirmButton {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+   COMMENTS
+   ===================================================== */
+
+.commentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.commentWrapper {
+  width: 100%;
+}
+
+.comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
+.commentAvatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-200, #eee);
+  color: var(--foreground, #111);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.commentAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.commentContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.commentUserName {
+  display: inline-block;
+  color: var(--foreground, #111);
+  font-weight: 700;
+  text-decoration: none;
+  margin-bottom: 2px;
+}
+
+.commentUserName:hover {
+  text-decoration: underline;
+}
+
+.commentText {
+  margin: 2px 0 0;
+  line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.commentMention {
+  color: #e85d4c;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.commentMention:hover {
+  text-decoration: underline;
+}
+
+.commentActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 5px;
+}
+
+.commentReplyBtn,
+.commentDeleteBtn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--stone, #888);
+}
+
+.commentReplyBtn:hover {
+  color: var(--foreground, #111);
+}
+
+.commentDeleteBtn:hover {
+  color: #e85d4c;
+}
+
+
+/* =====================================================
+   NESTED REPLIES
+   ===================================================== */
+
+.commentReplies {
+  margin-left: 46px;
+  margin-top: 12px;
+  padding-left: 14px;
+  border-left: 1px solid
+    var(--border, #e5e5e5);
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/* =====================================================
+   REPLYING INDICATOR
+   ===================================================== */
+
+.replyingIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 8px 12px;
+  margin-bottom: 10px;
+
+  border-radius: 8px;
+  background: rgba(232, 93, 76, 0.08);
+
+  font-size: 13px;
+}
+
+.replyingIndicator strong {
+  color: #e85d4c;
+}
+
+.replyingIndicator button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--stone, #888);
+}
+
+.replyingIndicator button:hover {
+  color: #e85d4c;
+}
+
+
+/* =====================================================
+   COMMENT INPUT
+   ===================================================== */
+
+.commentInputWrapper {
+  position: relative;
+  margin-top: 16px;
+}
+
+.commentForm {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.commentInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.commentSubmit {
+  flex-shrink: 0;
+}
+
+.commentSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* =====================================================
+   MENTION DROPDOWN
+   ===================================================== */
+
+.mentionSuggestions {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+
+  bottom: calc(100% + 8px);
+
+  max-height: 240px;
+  overflow-y: auto;
+
+  background: var(
+    --background,
+    #fff
+  );
+
+  border: 1px solid
+    var(--border, #e5e5e5);
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 10px 35px
+    rgba(0, 0, 0, 0.12);
+
+  z-index: 100;
+}
+
+.mentionSuggestion {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 10px 12px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: var(
+    --foreground,
+    #111
+  );
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.mentionSuggestion:hover {
+  background: rgba(
+    0,
+    0,
+    0,
+    0.04
+  );
+}
+
+.mentionAvatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eee;
+
+  font-weight: 700;
+}
+
+.mentionAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mentionUserInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  min-width: 0;
+}
+
+.mentionUserInfo strong {
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.mentionUserInfo span {
+  font-size: 12px;
+  color: var(--stone, #888);
+}
